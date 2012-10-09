@@ -61,7 +61,6 @@ class ConnectProxy(Proxy):
 
     def connectionLost(self, reason):
         if self.connectedRemote is not None:
-            print "Proxy connection lost!", reason
             self.connectedRemote.transport.loseConnection()
         Proxy.connectionLost(self, reason)
 
@@ -87,7 +86,6 @@ class ConnectProxyClient(Protocol):
 
     def connectionLost(self, reason):
         if self.connectedClient is not None:
-            print "Client Connection lost!", reason
             self.connectedClient.transport.loseConnection()
 
     def dataReceived(self, data):
