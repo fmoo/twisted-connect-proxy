@@ -39,7 +39,7 @@ class ConnectProxyRequest(ProxyRequest):
                                         default_port)
         if port is None:
             self.fail("Bad CONNECT Request",
-                      "Unable to parse port from URI: %s" % self.uri)
+                      "Unable to parse port from URI: %s" % repr(self.uri))
             return
 
         clientFactory = ConnectProxyClientFactory(host, port, self)
