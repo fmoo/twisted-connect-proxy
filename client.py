@@ -14,6 +14,7 @@ class ProxyConnectError(ConnectError):
 
 
 class HTTPProxyConnector(object):
+    """Helper to wrap reactor connection API (TCP, SSL) via a CONNECT proxy."""
     implements(IReactorTCP, IReactorSSL)
 
     def __init__(self, proxy_host, proxy_port,
@@ -41,6 +42,7 @@ class HTTPProxyConnector(object):
 
 
 class HTTPProxiedClientFactory(protocol.ClientFactory):
+    """ClientFactory wrapper that triggers an HTTP proxy CONNECT on connect"""
     def __init__(self, delegate, dst_host, dst_port):
         self.delegate = delegate
         self.dst_host = dst_host
@@ -62,6 +64,12 @@ class HTTPProxiedClientFactory(protocol.ClientFactory):
 
 
 class HTTPConnectTunneler(protocol.Protocol):
+    """Protocol that wraps transport with CONNECT proxy handshake on connect
+    
+    `factory` MUST be assigned in order to use this Protocol, and the value
+    *must* have a `delegate` attribute to trigger wrapped, post-connect,
+    factory (creation) methods.
+    """
     http = None
     otherConn = None
     noisy = True
@@ -86,6 +94,8 @@ class HTTPConnectTunneler(protocol.Protocol):
             self.http.connectionLost(reason)
 
     def proxyConnected(self):
+        # TODO: Bail if `self.factory` is unassigned or
+        # does not have a `delegate`
         self.otherConn = self.factory.delegate.buildProtocol(self.orig_addr)
         self.otherConn.makeConnection(self.transport)
 
@@ -110,6 +120,11 @@ class HTTPConnectTunneler(protocol.Protocol):
 
 
 class HTTPConnectSetup(http.HTTPClient):
+    """HTTPClient protocol to send a CONNECT message for proxies.
+
+    `parent` MUST be assigned to an HTTPConnectTunneler instance, or have a
+    `proxyConnected` method that will be invoked post-CONNECT (http request)
+    """
     noisy = True
 
     def __init__(self, host, port):
@@ -133,6 +148,7 @@ class HTTPConnectSetup(http.HTTPClient):
     def handleEndHeaders(self):
         if self.noisy:
             log.msg("End Headers")
+        # TODO: Make sure parent is assigned, and has a proxyConnected callback
         self.parent.proxyConnected()
 
     def handleResponse(self, body):
