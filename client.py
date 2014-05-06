@@ -1,12 +1,15 @@
-from twisted.web import http
-from twisted.internet import protocol, reactor
+#!/usr/bin/env python
 
+from twisted.internet import protocol, reactor
 from twisted.internet.error import CannotListenError, ConnectError
 from twisted.internet.interfaces import IReactorTCP, IReactorSSL
-from zope.interface import implements
 
 from twisted.protocols import tls
 from twisted.python import log
+
+from twisted.web import http
+
+from zope.interface import implements
 
 
 class ProxyConnectError(ConnectError):

@@ -1,7 +1,10 @@
-from twisted.web.proxy import Proxy, ProxyRequest
+#!/usr/bin/env python
+
 from twisted.internet.protocol import Protocol, ClientFactory
-import urlparse
+from twisted.web.proxy import Proxy, ProxyRequest
 from twisted.python import log
+
+import urlparse
 
 
 class ConnectProxyRequest(ProxyRequest):
