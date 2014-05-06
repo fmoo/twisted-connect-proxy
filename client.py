@@ -171,7 +171,7 @@ if __name__ == '__main__':
     ns = ap.parse_args()
 
     proxy = HTTPProxyConnector(proxy_host=ns.proxy_host,
-            proxy_port=ns.proxy_port)
+                               proxy_port=ns.proxy_port)
 
     def cb(*args, **kwargs):
         log.msg("Got callback: args=%s, kwargs=%s" %

@@ -83,7 +83,7 @@ class ConnectProxyClient(Protocol):
         self.factory.request.channel.connectedRemote = self
         self.factory.request.setResponseCode(200, "CONNECT OK")
         self.factory.request.setHeader('X-Connected-IP',
-            self.transport.realAddress[0])
+                                       self.transport.realAddress[0])
         self.factory.request.setHeader('Content-Length', '0')
         self.factory.request.finish()
 
@@ -110,7 +110,6 @@ class ConnectProxyClientFactory(ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         self.request.fail("Gateway Error", str(reason))
-
 
 
 if __name__ == '__main__':
