@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument('port', default=0, nargs='?', type=int)
+    ap.add_argument('port', default=8080, nargs='?', type=int)
     ns = ap.parse_args()
 
     import twisted.web.http
