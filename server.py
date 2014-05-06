@@ -19,7 +19,7 @@ class ConnectProxyRequest(ProxyRequest):
         self.setResponseCode(501, message)
         self.responseHeaders.addRawHeader("Content-Type", "text/html")
         self.write(body)
-        self.finish()                                
+        self.finish()
 
     def splitHostPort(self, hostport, default_port):
         port = default_port
