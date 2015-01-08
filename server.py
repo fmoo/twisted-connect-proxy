@@ -123,6 +123,7 @@ if __name__ == '__main__':
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument('port', default=8080, nargs='?', type=int)
+    ap.add_argument('--ssl-cert', type=str)
     ns = ap.parse_args()
 
     import twisted.web.http
@@ -130,5 +131,13 @@ if __name__ == '__main__':
     factory.protocol = ConnectProxy
 
     import twisted.internet
-    c = twisted.internet.reactor.listenTCP(ns.port, factory)
+    if ns.ssl_cert:
+        from twisted.internet import ssl
+        with open(ns.ssl_cert, 'rb') as fp:
+            ssl_cert = fp.read()
+        certificate = ssl.PrivateCertificate.loadPEM(ssl_cert)
+        twisted.internet.reactor.listenSSL(ns.port, factory,
+                                           certificate.options())
+    else:
+        twisted.internet.reactor.listenTCP(ns.port, factory)
     twisted.internet.reactor.run()
