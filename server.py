@@ -8,7 +8,10 @@ from twisted.internet.protocol import Protocol, ClientFactory
 from twisted.web.proxy import Proxy, ProxyRequest
 from twisted.python import log
 
-import urlparse
+try:
+    import urlparse
+except:
+    from urllib import parse as urlparse
 
 
 class ConnectProxyRequest(ProxyRequest):
