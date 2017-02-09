@@ -66,6 +66,13 @@ class ConnectProxy(Proxy):
     def requestDone(self, request):
         if request.method == 'CONNECT' and self.connectedRemote is not None:
             self.connectedRemote.connectedClient = self
+            self._handlingRequest = False
+            self._producer.resumeProducing()
+            if self._savedTimeOut:
+                self.setTimeout(self._savedTimeOut)
+            data = b''.join(self._dataBuffer)
+            self._dataBuffer = []
+            self.setLineMode(data)
         else:
             Proxy.requestDone(self, request)
 
