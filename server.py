@@ -7,6 +7,7 @@
 from twisted.internet.protocol import Protocol, ClientFactory
 from twisted.web.proxy import Proxy, ProxyRequest
 from twisted.python import log
+from twisted.python.versions import Version
 
 try:
     import urlparse
@@ -66,13 +67,14 @@ class ConnectProxy(Proxy):
     def requestDone(self, request):
         if request.method == 'CONNECT' and self.connectedRemote is not None:
             self.connectedRemote.connectedClient = self
-            self._handlingRequest = False
-            self._producer.resumeProducing()
-            if self._savedTimeOut:
-                self.setTimeout(self._savedTimeOut)
-            data = b''.join(self._dataBuffer)
-            self._dataBuffer = []
-            self.setLineMode(data)
+            if twisted.version >= Version(twisted.__name__, 16, 3, 0):
+                self._handlingRequest = False
+                self._producer.resumeProducing()
+                if self._savedTimeOut:
+                    self.setTimeout(self._savedTimeOut)
+                data = b''.join(self._dataBuffer)
+                self._dataBuffer = []
+                self.setLineMode(data)
         else:
             Proxy.requestDone(self, request)
 
